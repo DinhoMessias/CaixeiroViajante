@@ -5,9 +5,11 @@ import java.util.Arrays;
 public class Cidade {
 
 	private int[] coordenadas;
+	private String label;
 
-	public Cidade(int[] coordenadas) {
+	public Cidade(int[] coordenadas, String label) {
 		this.coordenadas = coordenadas;
+		this.label = label;
 	}
 
 	public Cidade() {
@@ -22,6 +24,14 @@ public class Cidade {
 		this.coordenadas = coordenadas;
 	}
 
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
 	public double calcularDistancia(int[] coordenada) {
 		double distancia;
 
@@ -33,7 +43,7 @@ public class Cidade {
 	}
 
 	public String toString() {
-		return "Coordenadas: " + Arrays.toString(coordenadas);
+		return label + ": " + Arrays.toString(coordenadas);
 	}
 
 }

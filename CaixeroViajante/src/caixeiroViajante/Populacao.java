@@ -10,7 +10,7 @@ public class Populacao {
 	}
 
 	public Populacao() {
-
+		this.pop = new ArrayList<Rota>();
 	}
 
 	public ArrayList<Rota> getPop() {
