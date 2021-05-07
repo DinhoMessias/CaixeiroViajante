@@ -12,7 +12,7 @@ public class Util {
 		FileReader arq;
 		BufferedReader buff;
 		String saida = "";
-		ArrayList<Cidade> cidades = new ArrayList();
+		ArrayList<Cidade> cidades = new ArrayList<Cidade>();
 
 		try {
 			arq = new FileReader(caminho);
@@ -40,7 +40,7 @@ public class Util {
 			for (int i = 0; i < pontos.length; i++) {
 				int[] coord = new int[2];
 				int pos = 0;
-				String label = "Ponto " + i;
+				String label = "Pt " + i;
 				for (int j = 0; j < 2; j++) {
 					coord[pos] = pontos[i][j];
 					pos++;
@@ -59,55 +59,95 @@ public class Util {
 		}
 	}
 
-	public static ArrayList<Cidade> gerarRota(ArrayList<Cidade> cidades, int numCidades) {
-		ArrayList<Cidade> rota = new ArrayList<>();
+	public static Rota gerarRota(ArrayList<Cidade> cidades, int numCidadesRota) {
+		Rota rota = new Rota(numCidadesRota);
+		ArrayList<Cidade> cidadesEscolhidas = new ArrayList<>();
+		Cidade[] cidadesRota = new Cidade[numCidadesRota];
 		Random random = new Random();
 
-		while (rota.size() != numCidades) {
+		while (cidadesEscolhidas.size() != numCidadesRota) {
 			int index = random.nextInt(cidades.size());
-			if (!rota.contains(cidades.get(index))) {
-				rota.add(cidades.get(index));
+			if (!cidadesEscolhidas.contains(cidades.get(index))) {
+				cidadesEscolhidas.add(cidades.get(index));
 			}
 		}
+
+		for (int i = 0; i < cidadesEscolhidas.size(); i++) {
+			cidadesRota[i] = cidadesEscolhidas.get(i);
+		}
+		rota.setRota(cidadesRota);
+		rota.calcularFitness();
 		return rota;
 	}
 
-	public static Rota vizinhoProximo(ArrayList<Cidade> cidadesRota) {
-		ArrayList<Cidade> cidadesVisitadas = new ArrayList<>();
-		Random random = new Random();
-		// selecionando um ponto aleatorio para comecar a rota
-		Cidade cidade = cidadesRota.get(random.nextInt(cidadesRota.size()));
-		Cidade cidadeProx = new Cidade();
-		double distancia = Double.MAX_VALUE;
-		// Adicionando o ponto aleatorio no array de cidadesVisitadas
-		cidadesVisitadas.add(cidade);
+	public static Populacao gerarPopulacao(ArrayList<Cidade> cidades, int tamPopulacao, int numCidadesRota) {
+		Populacao populacao = new Populacao();
+		Rota rota = gerarRota(cidades, numCidadesRota);
+		//Definindo a geracao inicial como 1
+		rota.setGeracao(01);
+		populacao.addRota(rota);
 
-		while (cidadesVisitadas.size() != cidadesRota.size()) {
-			// Percorro todo o array da rota procurando a cidade mais proxima da inicial
-			for (int i = 0; i < cidadesRota.size(); i++) {
-				if (cidade.calcularDistancia(cidadesRota.get(i).getCoordenadas()) < distancia
-						&& !cidadesVisitadas.contains(cidadesRota.get(i))) {
-					// salvando a cidade mais proxima da cidade comparada
-					cidadeProx = cidadesRota.get(i);
-					// setando a distancia entra a cidade comparada e a mais proxima
-					distancia = cidade.calcularDistancia(cidadesRota.get(i).getCoordenadas());
+		while (populacao.getPop().size() != tamPopulacao) {
+			rota = shuffleRota(rota, numCidadesRota);
+			if (!isClone(populacao, rota.getRota())) {
+				populacao.addRota(rota);
+			}
+		}
+		return populacao;
+	}
+
+	public static Rota shuffleRota(Rota rota, int numCidadesRota) {
+		Rota rotaFinal = new Rota(numCidadesRota);
+		ArrayList<Cidade> rotaAlterada = new ArrayList<Cidade>();
+
+		for (Cidade cidade : rota.getRota()) {
+			rotaAlterada.add(cidade);
+		}
+		Collections.shuffle(rotaAlterada);
+		for (int i = 0; i < rotaAlterada.size(); i++) {
+			rotaFinal.getRota()[i] = rotaAlterada.get(i);
+		}
+		rotaFinal.setGeracao(rota.getGeracao());
+		rotaFinal.calcularFitness();
+		return rotaFinal;
+	}
+
+	public static Boolean isClone(Populacao pop, Cidade[] rota) {
+		int cont = 0;
+
+		for (Rota r1 : pop.getPop()) {
+			for (int i = 0; i < rota.length; i++) {
+				if (rota[i].getLabel() == r1.getRota()[i].getLabel()) {
+					cont++;
 				}
 			}
-			// resetando o valor da distancia para o proximo ciclo de comparacao
-			distancia = Double.MAX_VALUE;
-			// pegando a cidade com a menor distancia comparada para o proximo ciclo de
-			// comparacao
-			cidade = cidadeProx;
-			// adicionando a cidade mais proxima ao vetor das cidades visitadas
-			cidadesVisitadas.add(cidadeProx);
+			if (cont == rota.length) {
+				return true;
+			}
+			cont = 0;
 		}
-		// gerando a rota de retorno com o vetor das cidades visitadas e calculando o
-		// fitness da rota
-		Rota rota = new Rota();
-		rota.setRota(cidadesVisitadas);
-		rota.calcularFitness();
-
-		return rota;
+		return false;
 	}
 
+	public static void reinsercaoMelhorFitPais(Populacao populacao, Populacao pais, Rota filho) {
+		Rota piorPai = new Rota(pais.getPop().get(0).getSizeRota());
+		double fitMelhorPai = Double.MAX_VALUE;
+		double piorFitPais = Double.MIN_VALUE;
+		int cont = 0;
+
+		for (Rota rota : pais.getPop()) {
+			if (rota.getFitness() > piorFitPais) {
+				piorFitPais = rota.getFitness();
+				piorPai = rota;
+			}
+			if (rota.getFitness() < fitMelhorPai) {
+				fitMelhorPai = rota.getFitness();
+			}
+		}
+
+		if (filho.getFitness() < fitMelhorPai) {
+			cont = populacao.getPop().indexOf(piorPai);
+			populacao.getPop().set(cont, filho);
+		}
+	}
 }
