@@ -26,7 +26,7 @@ public class Populacao {
 	}
 
 	public Rota getMelhorRota() {
-		Rota melhorRota = new Rota();
+		Rota melhorRota = new Rota(this.pop.get(0).getRota().length);
 		Double fitness = Double.MAX_VALUE;
 		for (Rota rota : this.pop) {
 			if (rota.getFitness() < fitness) {
@@ -36,4 +36,16 @@ public class Populacao {
 		}
 		return melhorRota;
 	}
+
+	@Override
+	public String toString() {
+		String saida = "";
+
+		for (Rota rota : pop) {
+			saida += rota.toString() + "\n";
+		}
+
+		return saida;
+	}
+
 }
