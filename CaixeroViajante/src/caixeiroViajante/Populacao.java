@@ -25,6 +25,16 @@ public class Populacao {
 		this.pop.add(rota);
 	}
 
+	public int getMaiorGeracaoPop() {
+		int maiorGeracao = Integer.MIN_VALUE;
+		for (Rota rota : this.pop) {
+			if (rota.getGeracao() > maiorGeracao) {
+				maiorGeracao = rota.getGeracao();
+			}
+		}
+		return maiorGeracao;
+	}
+
 	public Rota getMelhorRota() {
 		Rota melhorRota = new Rota(this.pop.get(0).getRota().length);
 		Double fitness = Double.MAX_VALUE;
@@ -35,6 +45,24 @@ public class Populacao {
 			}
 		}
 		return melhorRota;
+	}
+
+	public boolean isClone(Rota filho) {
+		String rotaFilho = filho.imprimirRota();
+
+		for (Rota rota : this.pop) {
+			String rotaComparada = rota.imprimirRota();
+			if (rotaFilho.equalsIgnoreCase(rotaComparada)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void clonarPopulacao(Populacao populacao) {
+		for (Rota rota : populacao.getPop()) {
+			this.pop.add(rota);
+		}
 	}
 
 	@Override

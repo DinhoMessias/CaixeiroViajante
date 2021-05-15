@@ -17,7 +17,7 @@ public class Mutacao {
 
 		// garantindo que pelo menos 1 gene possa sofrer a mutacao
 		if (numGeneMut <= 0) {
-			numGeneMut = 1;
+			numGeneMut = 2;
 		}
 		// Se porcentagem total for igual ou menor que a chance de acontecer mutacao o
 		// algoritmo entra no ciclo para mudar a quantidade de genes definidos

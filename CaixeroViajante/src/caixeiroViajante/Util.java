@@ -83,13 +83,13 @@ public class Util {
 	public static Populacao gerarPopulacao(ArrayList<Cidade> cidades, int tamPopulacao, int numCidadesRota) {
 		Populacao populacao = new Populacao();
 		Rota rota = gerarRota(cidades, numCidadesRota);
-		//Definindo a geracao inicial como 1
+		// Definindo a geracao inicial como 1
 		rota.setGeracao(01);
 		populacao.addRota(rota);
 
 		while (populacao.getPop().size() != tamPopulacao) {
 			rota = shuffleRota(rota, numCidadesRota);
-			if (!isClone(populacao, rota.getRota())) {
+			if (!populacao.isClone(rota)) {
 				populacao.addRota(rota);
 			}
 		}
@@ -110,44 +110,5 @@ public class Util {
 		rotaFinal.setGeracao(rota.getGeracao());
 		rotaFinal.calcularFitness();
 		return rotaFinal;
-	}
-
-	public static Boolean isClone(Populacao pop, Cidade[] rota) {
-		int cont = 0;
-
-		for (Rota r1 : pop.getPop()) {
-			for (int i = 0; i < rota.length; i++) {
-				if (rota[i].getLabel() == r1.getRota()[i].getLabel()) {
-					cont++;
-				}
-			}
-			if (cont == rota.length) {
-				return true;
-			}
-			cont = 0;
-		}
-		return false;
-	}
-
-	public static void reinsercaoMelhorFitPais(Populacao populacao, Populacao pais, Rota filho) {
-		Rota piorPai = new Rota(pais.getPop().get(0).getSizeRota());
-		double fitMelhorPai = Double.MAX_VALUE;
-		double piorFitPais = Double.MIN_VALUE;
-		int cont = 0;
-
-		for (Rota rota : pais.getPop()) {
-			if (rota.getFitness() > piorFitPais) {
-				piorFitPais = rota.getFitness();
-				piorPai = rota;
-			}
-			if (rota.getFitness() < fitMelhorPai) {
-				fitMelhorPai = rota.getFitness();
-			}
-		}
-
-		if (filho.getFitness() < fitMelhorPai) {
-			cont = populacao.getPop().indexOf(piorPai);
-			populacao.getPop().set(cont, filho);
-		}
 	}
 }

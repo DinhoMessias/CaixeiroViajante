@@ -1,5 +1,6 @@
 package caixeiroViajante;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Rota {
@@ -72,16 +73,15 @@ public class Rota {
 
 	public void calcularAptidaoByMedia(double mediaFitness) {
 		Random random = new Random();
-
-		if (this.aptidao < mediaFitness) {
+		if (this.fitness > mediaFitness) {
 			this.aptidao = (random.nextInt((5 - 1) + 1) + 1);
 		} else {
-			this.aptidao = (random.nextInt((10 - 6) + 1) + 6);
+			this.aptidao = (random.nextInt((11 - 6) + 1) + 6);
 		}
 	}
 
 	public void calcularAptidaoPropByFit(double fitTotal) {
-		this.aptidao = (this.fitness * 100) / fitTotal;
+		this.aptidao = (this.fitness / fitTotal) * 100;
 	}
 
 	public Cidade getCidade(int index) {
@@ -94,11 +94,32 @@ public class Rota {
 
 	public boolean contains(Cidade cidade) {
 		for (int i = 0; i < this.rota.length; i++) {
-			if (this.rota[i].getLabel() == cidade.getLabel()) {
-				return true;
+			if (this.rota[i] != null) {
+				if (this.rota[i].getLabel() == cidade.getLabel()) {
+					return true;
+				}
 			}
 		}
 		return false;
+	}
+
+	public ArrayList<Integer> getPosNull() {
+		ArrayList<Integer> posNull = new ArrayList<>();
+
+		for (int i = 0; i < rota.length; i++) {
+			if (rota[i] == null) {
+				posNull.add(i);
+			}
+		}
+		return posNull;
+	}
+
+	public String imprimirRota() {
+		String saida = "";
+		for (Cidade cidade : this.rota) {
+			saida += cidade.getLabel() + " | ";
+		}
+		return saida + this.rota[0].getLabel();
 	}
 
 	@Override
