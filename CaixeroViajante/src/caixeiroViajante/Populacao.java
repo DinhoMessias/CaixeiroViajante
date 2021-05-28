@@ -61,7 +61,10 @@ public class Populacao {
 
 	public void clonarPopulacao(Populacao populacao) {
 		for (Rota rota : populacao.getPop()) {
-			this.pop.add(rota);
+			Rota r1 = new Rota(rota.getSizeRota());
+			r1.setRota(rota.getRota());
+			r1.setFitness(rota.getFitness());
+			this.pop.add(r1);
 		}
 	}
 

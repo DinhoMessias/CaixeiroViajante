@@ -44,12 +44,10 @@ public class Cruzamento {
 		// Completando rota do filho01 com as cidades do pai01
 		preencherFilho01PtCorte01(pais.getPop().get(0), filho01, mapPai01, mapPai02, ptCorte01);
 		preencherFilho01PtCorte2(pais.getPop().get(0), filho01, mapPai01, mapPai02, ptCorte02);
-		completarFilho(pais.getPop().get(0), filho01);
 
 		// Completando rota do filho02 com as cidades do pai02
 		preencherFilho2PtCorte01(pais.getPop().get(1), filho02, mapPai01, mapPai02, ptCorte01);
 		preencherFilho2PtCorte2(pais.getPop().get(1), filho02, mapPai01, mapPai02, ptCorte02);
-		completarFilho(pais.getPop().get(1), filho02);
 
 		// Calcular geracao dos filhos e fitness de cada filho
 		calcularGeracaoFilhos(pais, filho01, filho02);
@@ -125,24 +123,6 @@ public class Cruzamento {
 							cont++;
 						}
 					}
-				}
-			}
-		}
-	}
-
-	// Metodo para completar filhos caso exista ainda exista cidades ainda nao
-	// visitadas
-	private static void completarFilho(Rota pai, Rota filho) {
-		// Array com todas as posicoes que estao nulas no filho
-		ArrayList<Integer> posNull = filho.getPosNull();
-		int cont = 0;
-
-		if (posNull.size() > 0) {
-			for (int i = 0; i < pai.getSizeRota(); i++) {
-				Cidade cidade = pai.getCidade(i);
-				if (!filho.contains(cidade)) {
-					filho.addCidadeRota(cidade, posNull.get(cont));
-					cont++;
 				}
 			}
 		}

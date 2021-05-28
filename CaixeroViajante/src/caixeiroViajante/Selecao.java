@@ -41,13 +41,9 @@ public class Selecao {
 
 		calChanceRoletaProporcional(pop);
 
-		for (Rota r1 : pop.getPop()) {
-			numTotalBilhetes += r1.getAptidao();
-		}
-
 		while (numSelecionado != 2) {
 			double sumAptd = 0;
-			int numRoleta = random.nextInt(101);
+			double numRoleta = random.nextDouble() * 100;
 			for (Rota r2 : pop.getPop()) {
 				sumAptd += r2.getAptidao();
 				if (sumAptd >= numRoleta && !pais.getPop().contains(r2)) {

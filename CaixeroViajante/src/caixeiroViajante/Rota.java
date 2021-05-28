@@ -76,18 +76,18 @@ public class Rota {
 		if (this.fitness > mediaFitness) {
 			this.aptidao = (random.nextInt((5 - 1) + 1) + 1);
 		} else {
-			this.aptidao = (random.nextInt((11 - 6) + 1) + 6);
+			this.aptidao = (random.nextInt((10 - 6) + 1) + 6);
 		}
 	}
 
 	public void calcularAptidaoPropByFit(double fitTotal) {
 		this.aptidao = (this.fitness / fitTotal) * 100;
-	}
+	}					//    10     / 100 * 100 = 10%
 
 	public Cidade getCidade(int index) {
 		return this.rota[index];
 	}
-
+	
 	public int getSizeRota() {
 		return this.rota.length;
 	}
@@ -101,17 +101,6 @@ public class Rota {
 			}
 		}
 		return false;
-	}
-
-	public ArrayList<Integer> getPosNull() {
-		ArrayList<Integer> posNull = new ArrayList<>();
-
-		for (int i = 0; i < rota.length; i++) {
-			if (rota[i] == null) {
-				posNull.add(i);
-			}
-		}
-		return posNull;
 	}
 
 	public String imprimirRota() {
